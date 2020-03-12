@@ -64,7 +64,6 @@ axios.get('https://api.github.com/users/RobertMisch')
   console.log('request to github failed ' + error)
 })
 
-
 /* Step 5: Now that you have your own card getting added to the DOM, either 
           follow this link in your browser https://api.github.com/users/<Your github name>/followers 
           , manually find some other users' github handles, or use the list found 
@@ -74,18 +73,42 @@ axios.get('https://api.github.com/users/RobertMisch')
           Using that array, iterate over it, requesting data for each user, creating a new card for each
           user, and adding that card to the DOM.
 */
-
-const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
-
-followersArray.forEach(item => {
-  axios.get(`https://api.github.com/users/${item}`)
-  .then(response =>{
-    document.querySelector('.cards').append(cardCreator(response));
+//stretch array
+const stretchArray= [];
+axios.get('https://api.github.com/users/RobertMisch/followers')
+.then(response =>{
+  response.data.forEach(item => {
+    stretchArray.push(item.login)
   })
-  .catch(error => {
-    console.log('request to github failed ' + error)
+
+  //turning each item into a card with another promise
+  stretchArray.forEach(item => {
+    axios.get(`https://api.github.com/users/${item}`)
+    .then(response =>{
+      document.querySelector('.cards').append(cardCreator(response));
+    })
+    .catch(error => {
+      console.log('request to github failed ' + error)
+    })
   })
 })
+.catch(error => {
+  console.log('request to github failed ' + error)
+})
+
+// console.log(stretchArray);
+
+// const followersArray = ['tetondan', 'dustinmyers', 'justsml', 'luishrd', 'bigknell'];
+
+// followersArray.forEach(item => {
+//   axios.get(`https://api.github.com/users/${item}`)
+//   .then(response =>{
+//     document.querySelector('.cards').append(cardCreator(response));
+//   })
+//   .catch(error => {
+//     console.log('request to github failed ' + error)
+//   })
+// })
 
 /* Step 3: Create a function that accepts a single object as its only argument,
           Using DOM methods and properties, create a component that will return the following DOM element:
